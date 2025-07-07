@@ -4,6 +4,8 @@ import DriverModal from "./components/DriverModal.";
 import MapView from "./components/MapView";
 import type { DriverInfo } from "./types/driver";
 import { getAllDrivers } from "./api/drivers";
+import { connectToMQTT } from "./mqtt/client";
+import type { MqttMessage } from "./types/mqtt";
 
 const mockDrivers: DriverInfo[] = [
   {
@@ -40,6 +42,30 @@ function App() {
       })
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (!drivers.length) return;
+
+    const client = connectToMQTT((message: MqttMessage) => {
+      setDrivers((prev) =>
+        prev.map((d) =>
+          d.id === message.driverId
+            ? {
+                ...d,
+                position: [
+                  message.position.latitude,
+                  message.position.longitude,
+                ],
+              }
+            : d
+        )
+      );
+    });
+
+    return () => {
+      client.end();
+    };
+  }, [drivers.length]);
 
   return (
     <div style={{ display: "flex", height: "100vh" }}>
