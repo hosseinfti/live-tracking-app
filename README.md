@@ -1,69 +1,43 @@
-# React + TypeScript + Vite
+# Live Tracking App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+این پروژه نسخه‌ی ساده‌شده‌ای از یک سیستم مانیتورینگ راننده‌ست که موقعیت لحظه‌ای راننده‌ها رو از طریق MQTT دریافت و روی نقشه نمایش می‌ده.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ویژگی‌ها
 
-## Expanding the ESLint configuration
+- دریافت لیست راننده‌ها از API
+- اتصال به MQTT و دریافت اطلاعات زنده
+- نمایش راننده‌ها روی نقشه (Leaflet)
+- نمایش اطلاعات لحظه‌ای در کارت‌ها و modal
+- بهینه‌سازی با `useRef` برای کاهش re-renderهای غیرضروری
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## تکنولوژی‌ها
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+- React + TypeScript + Vite
+- Leaflet / React-Leaflet
+- MQTT.js
+- Web APIs (fetch)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## نکات مهم
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+> این پروژه نسخه‌ی اولیه و پایه‌ایه:
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- ظاهر پروژه طراحی خاصی نداره (UI ساده)
+- مقادیر مهم مثل endpointها داخل کد هستن و از `.env` جدا نشده
+- از state manager مثل Redux استفاده نشده
+- تستی نوشته نشده
+- رشته‌های فارسی مستقیماً داخل JSX هستن و از i18n استفاده نشده
+
+---
+
+## راه‌اندازی پروژه
+
+```bash
+npm install
+npm run dev
 ```
