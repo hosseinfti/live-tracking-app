@@ -1,5 +1,6 @@
 import type { DriverInfo } from "../types/driver";
 import type { MqttMessage } from "../types/mqtt";
+import { renderGpsSignal } from "../utils/renderHelpers";
 
 interface Props {
   driver: DriverInfo;
@@ -37,7 +38,7 @@ function DriverCard({ driver, selected = false, onClick, mqttData }: Props) {
           style={{ marginTop: "0.75rem", fontSize: "0.9rem", color: "#333" }}
         >
           <p>{new Date(mqttData.time).toLocaleTimeString()}</p>
-          <p>GPS: {mqttData.device.gpsSignal}</p>
+          <p>GPS: {renderGpsSignal(mqttData.device.gpsSignal)}</p>
           <p>باتری: %{mqttData.device.batteryLevel}</p>
         </div>
       )}

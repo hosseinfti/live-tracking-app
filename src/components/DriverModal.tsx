@@ -1,5 +1,10 @@
 import type { DriverInfo } from "../types/driver";
 import type { MqttMessage } from "../types/mqtt";
+import {
+  renderCardinalPoint,
+  renderGpsSignal,
+  renderPriority,
+} from "../utils/renderHelpers";
 
 interface Props {
   driver: DriverInfo | null;
@@ -12,8 +17,6 @@ function DriverModal({ driver, isOpen, onClose, mqttDataRef }: Props) {
   if (!isOpen || !driver) return null;
 
   const mqttData = driver ? mqttDataRef.current.get(driver.id) || null : null;
-
-  console.log(mqttData);
 
   return (
     <div
@@ -49,12 +52,16 @@ function DriverModal({ driver, isOpen, onClose, mqttDataRef }: Props) {
         {mqttData ? (
           <>
             <p>آخرین زمان: {new Date(mqttData.time).toLocaleString()}</p>
-            <p> GPS Signal: {mqttData.device.gpsSignal}</p>
+            <p> GPS Signal: {renderGpsSignal(mqttData.device.gpsSignal)}</p>
             <p> باتری: {mqttData.device.batteryLevel}%</p>
             <p> سرعت: {mqttData.position.speed} km/h</p>
             <p> مصرف سوخت: {mqttData.vehicle.fuelConsumption}L</p>
             <p> موتور روشن: {mqttData.vehicle.ignition ? "بله" : "خیر"}</p>
-            <p>Priority: {mqttData.messagePriority}</p>
+            <p>Priority: {renderPriority(mqttData.messagePriority)}</p>
+            <p>
+              cardinalPoint:{" "}
+              {renderCardinalPoint(mqttData.position.cardinalPoint)}
+            </p>
           </>
         ) : (
           <p style={{ color: "#888" }}>اطلاعات زنده‌ای موجود نیست.</p>
