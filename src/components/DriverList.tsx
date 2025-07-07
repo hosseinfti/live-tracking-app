@@ -1,6 +1,7 @@
 import { useState } from "react";
 import DriverCard from "./DriverCard";
 import type { DriverInfo } from "../types/driver";
+import DriverModal from "./DriverModal.";
 
 const mockDrivers: DriverInfo[] = [
   {
@@ -13,16 +14,16 @@ const mockDrivers: DriverInfo[] = [
   },
   {
     id: 2,
-    fullName: "زهرا نادری",
-    phoneNumber: "09353334444",
+    fullName: "زهره حیدری",
+    phoneNumber: "09351122345",
     packetNumber: "PKT-2025-9832",
     carName: "پژو 206",
-    licensePlate: "24-317-83",
+    licensePlate: "12-345-67",
   },
 ];
 
 function DriverList() {
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedDriver, setSelectedDriver] = useState<DriverInfo | null>(null);
 
   return (
     <div style={{ padding: "1rem" }}>
@@ -32,10 +33,16 @@ function DriverList() {
         <DriverCard
           key={driver.id}
           driver={driver}
-          selected={driver.id === selectedId}
-          onClick={() => setSelectedId(driver.id)}
+          selected={driver.id === selectedDriver?.id}
+          onClick={() => setSelectedDriver(driver)}
         />
       ))}
+
+      <DriverModal
+        driver={selectedDriver}
+        isOpen={selectedDriver !== null}
+        onClose={() => setSelectedDriver(null)}
+      />
     </div>
   );
 }
