@@ -1,37 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DriverList from "./components/DriverList";
-import DriverModal from "./components/DriverModal.";
+import DriverModal from "./components/DriverModal";
 import MapView from "./components/MapView";
 import type { DriverInfo } from "./types/driver";
 import { getAllDrivers } from "./api/drivers";
 import { connectToMQTT } from "./mqtt/client";
 import type { MqttMessage } from "./types/mqtt";
 
-const mockDrivers: DriverInfo[] = [
-  {
-    id: 1,
-    fullName: "امیر جعفری",
-    phoneNumber: "09182190051",
-    packetNumber: "PKT-2025-9740",
-    carName: "کیا سراتو",
-    licensePlate: "81-629-54",
-    position: [35.6892, 51.389],
-  },
-  {
-    id: 2,
-    fullName: "زهره حیدری",
-    phoneNumber: "09351122345",
-    packetNumber: "PKT-2025-9832",
-    carName: "پژو 206",
-    licensePlate: "12-345-67",
-    position: [35.6997, 51.337],
-  },
-];
 function App() {
   const [drivers, setDrivers] = useState<DriverInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDriverId, setSelectedDriverId] = useState<number | null>(null);
   const selectedDriver = drivers.find((d) => d.id === selectedDriverId) || null;
+  const mqttDataRef = useRef<Map<number, MqttMessage>>(new Map());
 
   useEffect(() => {
     getAllDrivers()
@@ -47,6 +28,8 @@ function App() {
     if (!drivers.length) return;
 
     const client = connectToMQTT((message: MqttMessage) => {
+      mqttDataRef.current.set(message.driverId, message);
+
       setDrivers((prev) =>
         prev.map((d) =>
           d.id === message.driverId
@@ -83,6 +66,7 @@ function App() {
               drivers={drivers}
               selectedId={selectedDriverId}
               onSelect={setSelectedDriverId}
+              mqttDataRef={mqttDataRef}
             />
           </div>
         </>
@@ -90,7 +74,8 @@ function App() {
 
       <DriverModal
         driver={selectedDriver}
-        isOpen={selectedDriver !== null}
+        mqttDataRef={mqttDataRef}
+        isOpen={!!selectedDriver}
         onClose={() => setSelectedDriverId(null)}
       />
     </div>

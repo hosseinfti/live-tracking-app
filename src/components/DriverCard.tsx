@@ -1,12 +1,14 @@
 import type { DriverInfo } from "../types/driver";
+import type { MqttMessage } from "../types/mqtt";
 
 interface Props {
   driver: DriverInfo;
   selected?: boolean;
   onClick?: () => void;
+  mqttData: MqttMessage | null;
 }
 
-function DriverCard({ driver, selected = false, onClick }: Props) {
+function DriverCard({ driver, selected = false, onClick, mqttData }: Props) {
   return (
     <div
       onClick={onClick}
@@ -24,11 +26,21 @@ function DriverCard({ driver, selected = false, onClick }: Props) {
       }}
     >
       <h3 style={{ margin: "0 0 0.5rem" }}>{driver.fullName}</h3>
-      <p style={{ margin: "0.25rem 0" }}>📞 {driver.phoneNumber}</p>
-      <p style={{ margin: "0.25rem 0" }}>📦 {driver.packetNumber}</p>
+      <p style={{ margin: "0.25rem 0" }}> {driver.phoneNumber}</p>
+      <p style={{ margin: "0.25rem 0" }}> {driver.packetNumber}</p>
       <p style={{ margin: "0.25rem 0" }}>
-        🚗 {driver.carName} - {driver.licensePlate}
+        {driver.carName} - {driver.licensePlate}
       </p>
+
+      {mqttData && (
+        <div
+          style={{ marginTop: "0.75rem", fontSize: "0.9rem", color: "#333" }}
+        >
+          <p>{new Date(mqttData.time).toLocaleTimeString()}</p>
+          <p>GPS: {mqttData.device.gpsSignal}</p>
+          <p>باتری: %{mqttData.device.batteryLevel}</p>
+        </div>
+      )}
     </div>
   );
 }

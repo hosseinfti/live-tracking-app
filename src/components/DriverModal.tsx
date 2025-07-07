@@ -1,13 +1,19 @@
 import type { DriverInfo } from "../types/driver";
+import type { MqttMessage } from "../types/mqtt";
 
 interface Props {
   driver: DriverInfo | null;
+  mqttDataRef: React.MutableRefObject<Map<number, MqttMessage>>;
   isOpen: boolean;
   onClose: () => void;
 }
 
-function DriverModal({ driver, isOpen, onClose }: Props) {
+function DriverModal({ driver, isOpen, onClose, mqttDataRef }: Props) {
   if (!isOpen || !driver) return null;
+
+  const mqttData = driver ? mqttDataRef.current.get(driver.id) || null : null;
+
+  console.log(mqttData);
 
   return (
     <div
@@ -39,6 +45,20 @@ function DriverModal({ driver, isOpen, onClose }: Props) {
         <p>شماره بسته: {driver.packetNumber}</p>
         <p>خودرو: {driver.carName}</p>
         <p>پلاک: {driver.licensePlate}</p>
+
+        {mqttData ? (
+          <>
+            <p>آخرین زمان: {new Date(mqttData.time).toLocaleString()}</p>
+            <p> GPS Signal: {mqttData.device.gpsSignal}</p>
+            <p> باتری: {mqttData.device.batteryLevel}%</p>
+            <p> سرعت: {mqttData.position.speed} km/h</p>
+            <p> مصرف سوخت: {mqttData.vehicle.fuelConsumption}L</p>
+            <p> موتور روشن: {mqttData.vehicle.ignition ? "بله" : "خیر"}</p>
+            <p>Priority: {mqttData.messagePriority}</p>
+          </>
+        ) : (
+          <p style={{ color: "#888" }}>اطلاعات زنده‌ای موجود نیست.</p>
+        )}
 
         <button
           style={{
