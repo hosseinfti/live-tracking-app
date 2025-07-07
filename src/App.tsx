@@ -4,12 +4,9 @@ import MapView from "./components/MapView";
 function App() {
   return (
     <div style={{ display: "flex", height: "100vh" }}>
-      {/* نقشه سمت چپ */}
-      <div style={{ flex: 1, borderLeft: "1px solid #ddd" }}>
+      <div style={{ flex: 1 }}>
         <MapView />
       </div>
-
-      {/* لیست راننده‌ها سمت راست */}
       <div style={{ width: "400px", overflowY: "auto" }}>
         <DriverList />
       </div>
