@@ -1,38 +1,20 @@
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { Icon } from "leaflet";
 import type { LatLngExpression } from "leaflet";
+import type { DriverInfo } from "../types/driver";
 
-const defaultIcon = new Icon({
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-});
-
-interface DriverMarker {
-  id: number;
-  name: string;
-  position: LatLngExpression;
+interface Props {
+  drivers: DriverInfo[];
+  selectedId: number | null;
 }
 
-const mockDriverMarkers: DriverMarker[] = [
-  {
-    id: 1,
-    name: "امیر جعفری",
-    position: [35.6892, 51.389],
-  },
-  {
-    id: 2,
-    name: "زهره حیدری",
-    position: [35.6997, 51.337],
-  },
-];
+function MapView({ drivers, selectedId }: Props) {
+  const selectedDriver = drivers.find((d) => d.id === selectedId);
 
-function MapView() {
   return (
     <MapContainer
-      center={[35.6892, 51.389]}
-      zoom={12}
+      center={selectedDriver?.position || [35.6892, 51.389]}
+      zoom={selectedDriver ? 15 : 12}
       style={{ height: "100%", width: "100%" }}
     >
       <TileLayer
@@ -40,13 +22,20 @@ function MapView() {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      {mockDriverMarkers.map((driver) => (
-        <Marker key={driver.id} position={driver.position} icon={defaultIcon}>
-          <Popup>{driver.name}</Popup>
+      {drivers.map((driver) => (
+        <Marker key={driver.id} position={driver.position as LatLngExpression}>
+          <Popup>{driver.fullName}</Popup>
         </Marker>
       ))}
+      <ZoomToMarker center={selectedDriver?.position} />
     </MapContainer>
   );
+}
+
+function ZoomToMarker({ center }: { center?: LatLngExpression }) {
+  const map = useMap();
+  if (center) map.setView(center, 15);
+  return null;
 }
 
 export default MapView;

@@ -5,4 +5,5 @@ export interface DriverInfo {
   packetNumber: string;
   carName: string;
   licensePlate: string;
+  position: [number, number];
 }
